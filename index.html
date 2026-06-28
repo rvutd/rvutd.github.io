@@ -35,9 +35,11 @@
     /* NAV */
     nav {
       position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(13, 17, 23, 0.85);
+      background: rgba(13, 17, 23, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 2rem; height: 56px;
     }
@@ -57,6 +59,52 @@
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
+
+    /* Hamburger button */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 40px; height: 40px;
+      background: none; border: none;
+      cursor: pointer; padding: 6px;
+      border-radius: 6px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+      transform-origin: center;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .nav-drawer {
+      display: none;
+      flex-direction: column;
+      padding: 0.75rem 1.5rem 1.25rem;
+      border-top: 1px solid var(--border);
+      gap: 0;
+    }
+    .nav-drawer a {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .nav-drawer a:last-child { border-bottom: none; }
+    .nav-drawer a:hover { color: var(--text); }
+    .nav-drawer.open { display: flex; }
 
     /* HERO */
     .hero {
@@ -396,8 +444,9 @@
     @media (max-width: 768px) {
       .hero-stats { display: none; }
       .hero { min-height: auto; padding-top: 7rem; }
-      nav { padding: 0 1rem; }
-      .nav-links { gap: 1rem; }
+      .nav-inner { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
       section { padding: 3rem 1rem; }
     }
   </style>
@@ -405,13 +454,24 @@
 <body>
 
 <nav>
-  <div class="nav-logo">ravindra.purohit</div>
-  <ul class="nav-links">
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+  <div class="nav-inner">
+    <div class="nav-logo">ravindra.purohit</div>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-drawer" id="nav-drawer">
+    <a href="#skills" class="drawer-link">Skills</a>
+    <a href="#experience" class="drawer-link">Experience</a>
+    <a href="#projects" class="drawer-link">Projects</a>
+    <a href="#contact" class="drawer-link">Contact</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -653,6 +713,20 @@
 </footer>
 
 <script>
+  // Hamburger menu
+  const toggle = document.getElementById('nav-toggle');
+  const drawer = document.getElementById('nav-drawer');
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('open');
+    drawer.classList.toggle('open');
+  });
+  document.querySelectorAll('.drawer-link').forEach(link => {
+    link.addEventListener('click', () => {
+      toggle.classList.remove('open');
+      drawer.classList.remove('open');
+    });
+  });
+
   // Typing animation
   const phrases = [
     'Oracle Fusion Developer',
